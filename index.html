@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1030">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Погода">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<title>Погода</title><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;--g:rgba(255,255,255,.14);--b:rgba(255,255,255,.28)}
+*{box-sizing:border-box;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:#0b1030;color:#fff;font-family:-apple-system,"SF Pro Display","Segoe UI",Roboto,sans-serif;min-height:100vh;overflow-x:hidden}
+#c{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:14px}
+.glass{background:var(--g);border:1px solid var(--b);border-radius:26px;backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);box-shadow:0 10px 40px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.35)}
+.bar{display:flex;gap:8px;padding:8px}
+.bar input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff;font-size:16px;padding:8px 12px}
+.bar input::placeholder{color:rgba(255,255,255,.65)}
+button{font:inherit;color:#fff;background:var(--g);border:1px solid var(--b);border-radius:18px;padding:8px 13px;cursor:pointer;transition:transform .2s,background .2s}
+button:active{transform:scale(.92)}button.on{background:rgba(255,255,255,.35)}
+.main{padding:26px 22px;text-align:center;animation:rise .8s both}
+.city{font-size:22px;font-weight:600;letter-spacing:.3px}
+.temp{font-size:104px;font-weight:200;line-height:1;margin:6px 0;text-shadow:0 6px 40px rgba(0,0,0,.25);animation:float 6s ease-in-out infinite}
+.desc{font-size:19px;opacity:.92}
+.row{display:flex;justify-content:space-around;margin-top:20px;font-size:14px;opacity:.9}
+.row b{display:block;font-size:17px;margin-top:2px}
+.sec{padding:14px 6px 14px 14px;animation:rise .8s .15s both}
+.sec h3{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7;margin-bottom:10px}
+.hours{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.hours::-webkit-scrollbar{display:none}
+.h{flex:0 0 64px;text-align:center;padding:10px 0;border-radius:18px;background:rgba(255,255,255,.08);font-size:14px}
+.h i{display:block;font-style:normal;font-size:24px;margin:6px 0}
+.d{display:flex;align-items:center;padding:9px 12px 9px 0;font-size:16px;border-top:1px solid rgba(255,255,255,.14)}
+.d:first-of-type{border-top:0}.d span:first-child{width:52px;text-transform:capitalize}.d i{font-style:normal;width:40px;font-size:22px}
+.d em{font-style:normal;margin-left:auto;opacity:.75}.d b{width:44px;text-align:right}
+.note{font-size:12px;text-align:center;opacity:.75;padding:0 10px}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes float{50%{transform:translateY(-6px)}}
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+body{font-family:Manrope,-apple-system,'SF Pro Display','Segoe UI',sans-serif}
+body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.glass{position:relative}
+.bar{border-radius:40px;padding:6px 6px 6px 14px;transition:box-shadow .3s}
+.bar:focus-within{box-shadow:0 0 0 2px rgba(255,255,255,.55),0 0 40px rgba(255,255,255,.3)}
+.bar button{width:42px;height:42px;border-radius:50%;padding:0;font-size:17px}
+.main{overflow:hidden;border-radius:34px;padding:30px 20px 22px;transform:perspective(900px) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg));transition:transform .25s ease-out}
+.main,.sec{animation-name:rise2}
+@keyframes rise2{from{opacity:0;translate:0 26px}to{opacity:1;translate:0 0}}
+.main::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--a),transparent 0 62%,rgba(255,255,255,.95) 82%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 7s linear infinite;pointer-events:none}
+@keyframes spin{to{--a:360deg}}
+.ghost{position:absolute;left:0;right:0;top:46%;transform:translateY(-50%);font-size:96px;font-weight:800;letter-spacing:-4px;opacity:.08;white-space:nowrap;overflow:hidden;text-transform:uppercase;pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:3px;font-weight:600;padding:6px 14px;border-radius:20px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25)}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:#7dffb0;box-shadow:0 0 10px #7dffb0;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3;transform:scale(.6)}}
+.city{margin-top:14px;font-weight:600;font-size:24px}
+.temp{font-size:132px;font-weight:200;letter-spacing:-8px;text-shadow:none;background:linear-gradient(180deg,#fff 30%,rgba(255,255,255,.35));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 10px 30px rgba(0,0,0,.25))}
+.desc{font-weight:400;letter-spacing:2px;text-transform:uppercase;font-size:14px}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.row>div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:22px;padding:12px 4px;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;transition:transform .25s,background .25s}
+.row>div:hover{transform:translateY(-4px);background:rgba(255,255,255,.2)}
+.row u{display:block;text-decoration:none;font-size:22px;margin-bottom:6px}
+.row b{font-size:18px;letter-spacing:0;text-transform:none}
+.sec{border-radius:30px}
+.sec h3::before{content:'';display:inline-block;width:18px;height:2px;background:#fff;border-radius:2px;vertical-align:middle;margin-right:10px;opacity:.8}
+.h{flex-basis:68px;border:1px solid rgba(255,255,255,.12);animation:pop .6s calc(var(--i)*.06s) both}
+.h:first-child{background:rgba(255,255,255,.28);box-shadow:0 0 26px rgba(255,255,255,.28)}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.88)}}
+.d s{flex:1;height:6px;margin:0 12px;border-radius:6px;background:rgba(255,255,255,.14);position:relative}
+.d s u{position:absolute;top:0;bottom:0;border-radius:6px;background:linear-gradient(90deg,#7dd3ff,#ffd36b,#ff8a5b);box-shadow:0 0 10px rgba(255,200,120,.5)}
+.d em{margin-left:0}
+</style></head><body>
+<canvas id="c"></canvas>
+<div class="app">
+ <div class="glass bar"><input id="q" placeholder="Поиск города…" autocomplete="off"><button id="go">🔍</button><button id="loc">📍</button></div>
+ <div class="glass main"><div class="ghost" id="gh">Ташкент</div><div class="eyebrow"><i></i>СЕЙЧАС</div><div class="city" id="city">Ташкент</div><div class="temp" id="temp">24°</div><div class="desc" id="desc">Ясно</div>
+  <div class="row"><div><u>🌡️</u>Ощущается<b id="fl">—</b></div><div><u>💨</u>Ветер<b id="wd">—</b></div><div><u>💧</u>Влажность<b id="hm">—</b></div></div></div>
+ <div class="glass sec"><h3>По часам</h3><div class="hours" id="hrs"></div></div>
+ <div class="glass sec"><h3>7 дней</h3><div id="days"></div></div>
+ <div class="note" id="note"></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const SC={clear:['☀️','Ясно',['#1f7bff','#8fd6ff']],rain:['🌧️','Дождь',['#34435c','#6c819b']],storm:['⛈️','Гроза',['#10132a','#3a3f66']],snow:['❄️','Снегопад',['#7388ab','#d2deef']],fog:['🌫️','Туман',['#85919d','#c6cdd3']],night:['🌙','Ясная ночь',['#060a22','#2b2e66']]};
+const CLOUDS={clear:2,rain:7,storm:9,snow:6,fog:4,night:2};
+const CITIES={'ташкент':[41.3,69.24],'самарканд':[39.65,66.96],'бухара':[39.77,64.42],'москва':[55.75,37.62],'лондон':[51.5,-0.12],'токио':[35.68,139.69],'нью-йорк':[40.71,-74.0]};
+let sc='clear',cur={top:[31,123,255],bot:[143,214,255]},live=null;
+const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const cv=$('c'),x=cv.getContext('2d');let W,H;
+function rs(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;x.setTransform(d,0,0,d,0,0);init()}
+const R=(a,b)=>a+Math.random()*(b-a);
+let rain=[],drops=[],snow=[],stars=[],clouds=[],fogs=[],motes=[],pile=0,flash=0,bolt=null,shoot=null,nextBolt=120,T=0;
+function init(){
+ rain=Array.from({length:sc==='storm'?420:260},()=>({x:R(0,W+200),y:R(0,H),l:R(12,30),v:R(16,28)}));
+ drops=[];
+ snow=Array.from({length:sc==='snow'?190:0},()=>({x:R(0,W),y:R(0,H),r:R(1.2,4.2),v:R(.6,2.2),p:R(0,6)}));
+ stars=Array.from({length:170},()=>({x:R(0,W),y:R(0,H*.8),r:R(.4,1.7),p:R(0,6)}));
+ clouds=Array.from({length:CLOUDS[sc]},()=>({x:R(-200,W),y:R(0,H*.42),s:R(.8,1.8),v:R(.1,.45)}));
+ fogs=Array.from({length:8},()=>({x:R(0,W),y:R(H*.2,H),r:R(160,340),v:R(.15,.5)}));
+ motes=Array.from({length:40},()=>({x:R(0,W),y:R(0,H),r:R(1,3.5),v:R(.1,.5),p:R(0,6)}));
+ pile=0;
+}
+function bg(){
+ const [t,b]=SC[sc][2].map(hex);
+ for(let i=0;i<3;i++){cur.top[i]+=(t[i]-cur.top[i])*.04;cur.bot[i]+=(b[i]-cur.bot[i])*.04}
+ const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,`rgb(${cur.top.map(Math.round)})`);g.addColorStop(1,`rgb(${cur.bot.map(Math.round)})`);
+ x.fillStyle=g;x.fillRect(0,0,W,H);
+}
+function sun(){
+ const sx=W*.78,sy=H*.16;
+ x.save();x.translate(sx,sy);x.rotate(T*.0006);
+ for(let i=0;i<16;i++){x.rotate(Math.PI/8);const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(255,240,180,.28)');g.addColorStop(1,'rgba(255,240,180,0)');
+  x.fillStyle=g;x.beginPath();x.moveTo(-8,0);x.lineTo(8,0);x.lineTo(70+Math.sin(T*.02+i)*30,H*1.2);x.lineTo(-70-Math.sin(T*.02+i)*30,H*1.2);x.fill()}
+ x.restore();
+ let g=x.createRadialGradient(sx,sy,0,sx,sy,260);g.addColorStop(0,'rgba(255,255,230,1)');g.addColorStop(.12,'rgba(255,235,150,.95)');g.addColorStop(.4,'rgba(255,200,90,.3)');g.addColorStop(1,'rgba(255,200,90,0)');
+ x.fillStyle=g;x.fillRect(sx-300,sy-300,600,600);
+ [[.3,40,.12],[.55,70,.09],[.8,26,.14],[1.1,90,.07]].forEach(([k,r,a])=>{const fx=sx+(W/2-sx)*k*1.6,fy=sy+(H/2-sy)*k*1.6;x.fillStyle=`rgba(255,255,255,${a})`;x.beginPath();x.arc(fx,fy,r,0,7);x.fill()});
+ motes.forEach(m=>{m.y-=m.v;m.x+=Math.sin(T*.02+m.p)*.4;if(m.y<0){m.y=H;m.x=R(0,W)}x.fillStyle=`rgba(255,255,220,${.25+.25*Math.sin(T*.05+m.p)})`;x.beginPath();x.arc(m.x,m.y,m.r,0,7);x.fill()});
+}
+function night(){
+ stars.forEach(s=>{x.fillStyle=`rgba(255,255,255,${.4+.6*Math.abs(Math.sin(T*.03+s.p))})`;x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fill()});
+ const mx=W*.75,my=H*.17;let g=x.createRadialGradient(mx,my,10,mx,my,170);g.addColorStop(0,'rgba(200,215,255,.5)');g.addColorStop(1,'rgba(200,215,255,0)');x.fillStyle=g;x.fillRect(mx-180,my-180,360,360);
+ g=x.createRadialGradient(mx-12,my-12,4,mx,my,46);g.addColorStop(0,'#fffef2');g.addColorStop(1,'#cfd6ee');x.fillStyle=g;x.beginPath();x.arc(mx,my,44,0,7);x.fill();
+ if(!shoot&&Math.random()<.004)shoot={x:R(W*.2,W),y:R(0,H*.3),l:0};
+ if(shoot){shoot.l+=14;const a=Math.max(0,1-shoot.l/260);x.strokeStyle=`rgba(255,255,255,${a})`;x.lineWidth=2;x.beginPath();x.moveTo(shoot.x-shoot.l,shoot.y+shoot.l*.5);x.lineTo(shoot.x-shoot.l+70,shoot.y+shoot.l*.5-35);x.stroke();if(a<=0)shoot=null}
+}
+function cloud(){
+ const dark=sc==='storm'?'45,50,85':sc==='rain'?'90,105,130':sc==='night'?'90,100,160':'255,255,255';
+ const al=sc==='clear'?.5:sc==='night'?.25:.55;
+ clouds.forEach(c=>{c.x+=c.v*(sc==='storm'?3:1);if(c.x>W+260)c.x=-300;
+  [[0,0,70],[60,-18,60],[-60,-8,55],[115,6,48],[-110,10,44]].forEach(([dx,dy,r])=>{const px=c.x+dx*c.s,py=c.y+dy*c.s,rr=r*c.s;const g=x.createRadialGradient(px,py,0,px,py,rr);g.addColorStop(0,`rgba(${dark},${al})`);g.addColorStop(1,`rgba(${dark},0)`);x.fillStyle=g;x.fillRect(px-rr,py-rr,rr*2,rr*2)})});
+}
+function rainFx(){
+ const wind=sc==='storm'?9:3;x.lineWidth=1.2;x.strokeStyle='rgba(210,230,255,.5)';x.beginPath();
+ rain.forEach(r=>{x.moveTo(r.x,r.y);x.lineTo(r.x+wind*r.l*.05,r.y+r.l);r.y+=r.v;r.x-=wind*.35;if(r.y>H){if(Math.random()<.3)drops.push({sp:1,x:r.x,y:H,t:0});r.y=-30;r.x=R(0,W+200)}if(r.x<-50)r.x=W+50});x.stroke();
+ drops=drops.filter(d=>d.sp?(d.t++<10):true);
+ drops.filter(d=>d.sp).forEach(d=>{x.strokeStyle=`rgba(220,235,255,${.5-d.t/22})`;x.beginPath();x.ellipse(d.x,d.y-2,d.t*1.6,d.t*.5,0,0,7);x.stroke()});
+ glass=glass||[];while(glass.length<46)glass.push({x:R(0,W),y:R(0,H),r:R(2,7),vy:0,go:Math.random()<.4});
+ glass.forEach((d,i)=>{if(!d.vy&&Math.random()<.004&&d.go)d.vy=R(.5,1.6);if(d.vy){d.y+=d.vy;d.vy*=1.004;x.strokeStyle='rgba(255,255,255,.12)';x.lineWidth=d.r*.6;x.beginPath();x.moveTo(d.x,d.y-d.vy*26);x.lineTo(d.x,d.y);x.stroke()}
+  if(d.y>H+10){glass[i]={x:R(0,W),y:R(-20,H*.5),r:R(2,7),vy:0,go:true}}
+  x.fillStyle='rgba(255,255,255,.16)';x.beginPath();x.arc(d.x,d.y,d.r,0,7);x.fill();x.strokeStyle='rgba(255,255,255,.4)';x.lineWidth=1;x.stroke();x.fillStyle='rgba(255,255,255,.8)';x.beginPath();x.arc(d.x-d.r*.3,d.y-d.r*.3,d.r*.28,0,7);x.fill()});
+}
+let glass=null;
+function stormFx(){
+ if(--nextBolt<=0){nextBolt=R(110,320);flash=1;let px=R(W*.15,W*.85),py=0;bolt=[[px,py]];while(py<H*.7){px+=R(-45,45);py+=R(25,60);bolt.push([px,py])}}
+ if(bolt&&flash>.3){x.save();x.shadowColor='#bcd4ff';x.shadowBlur=26;x.strokeStyle=`rgba(255,255,255,${flash})`;x.lineWidth=3;x.beginPath();bolt.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke();x.restore()}
+ if(flash>0){x.fillStyle=`rgba(220,230,255,${flash*.45})`;x.fillRect(0,0,W,H);flash-=.045}
+}
+function snowFx(){
+ snow.forEach(s=>{s.y+=s.v;s.x+=Math.sin(T*.02+s.p)*.7+.3;if(s.y>H){s.y=-10;s.x=R(0,W)}x.fillStyle=`rgba(255,255,255,${.5+s.r/9})`;x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fill()});
+ pile=Math.min(pile+.025,70);x.beginPath();x.moveTo(0,H);for(let i=0;i<=W;i+=10)x.lineTo(i,H-pile-Math.sin(i*.012+1)*pile*.18-Math.sin(i*.03)*pile*.08);x.lineTo(W,H);
+ const g=x.createLinearGradient(0,H-90,0,H);g.addColorStop(0,'rgba(255,255,255,.95)');g.addColorStop(1,'rgba(205,220,245,.95)');x.fillStyle=g;x.fill();
+}
+function fogFx(){fogs.forEach(f=>{f.x+=f.v;if(f.x>W+f.r)f.x=-f.r;const g=x.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r);g.addColorStop(0,'rgba(255,255,255,.28)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(f.x-f.r,f.y-f.r,f.r*2,f.r*2)})}
+function loop(){
+ T++;x.clearRect(0,0,W,H);bg();
+ if(sc==='night')night();if(sc==='clear')sun();
+ cloud();
+ if(sc==='rain'||sc==='storm')rainFx();
+ if(sc==='storm')stormFx();if(sc==='snow')snowFx();if(sc==='fog'||sc==='snow')fogFx();
+ requestAnimationFrame(loop);
+}
+/* data */
+const IC=k=>SC[k][0];
+function setScene(k){sc=k;init()}
+function show(o){
+ $('city').textContent=$('gh').textContent=o.city;$('temp').textContent=Math.round(o.t)+'°';$('desc').textContent=o.desc;
+ $('fl').textContent=Math.round(o.fl)+'°';$('wd').textContent=Math.round(o.wd)+' км/ч';$('hm').textContent=Math.round(o.hm)+'%';
+ $('hrs').innerHTML=o.hrs.map((h,i)=>`<div class="h" style="--i:${i}">${h[0]}<i>${h[1]}</i><b>${Math.round(h[2])}°</b></div>`).join('');
+ $('days').innerHTML=(()=>{const mn=Math.min(...o.days.map(d=>d[3])),sp=(Math.max(...o.days.map(d=>d[2]))-mn)||1;return o.days.map(d=>`<div class="d"><span>${d[0]}</span><i>${d[1]}</i><em>${Math.round(d[3])}°</em><s><u style="left:${(d[3]-mn)/sp*100}%;width:${Math.max(8,(d[2]-d[3])/sp*100)}%"></u></s><b>${Math.round(d[2])}°</b></div>`).join('')})();
+}
+function demo(city,k){
+ const base={clear:27,rain:14,storm:17,snow:-4,fog:8,night:15}[k],keys=Object.keys(SC);
+ const hrs=Array.from({length:12},(_,i)=>{const d=new Date(Date.now()+i*36e5);return[i?d.getHours()+':00':'Сейчас',IC(i>7&&k==='clear'?'night':k),base+Math.sin(i/3)*3]});
+ const days=Array.from({length:7},(_,i)=>{const d=new Date(Date.now()+i*864e5);return[i?d.toLocaleDateString('ru',{weekday:'short'}):'Сегодня',IC(i%3?k:keys[(i*2)%5]),base+3+Math.sin(i)*3,base-5+Math.cos(i)*2]});
+ show({city,t:base,desc:SC[k][1],fl:base-2,wd:k==='storm'?34:12,hm:k==='clear'?30:82,hrs,days});setScene(k);
+}
+function kind(c,day){return c>=95?'storm':(c>=71&&c<=77)||c===85||c===86?'snow':(c>=51&&c<=67)||(c>=80&&c<=82)?'rain':c===45||c===48?'fog':day?'clear':'night'}
+async function load(city,lat,lon){
+ try{
+  const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7`);
+  const j=await r.json(),c=j.current,k=kind(c.weather_code,c.is_day);
+  const i0=Math.max(0,j.hourly.time.findIndex(t=>t>=c.time.slice(0,13)));
+  const hrs=j.hourly.time.slice(i0,i0+12).map((t,i)=>[i?t.slice(11,16):'Сейчас',IC(kind(j.hourly.weather_code[i0+i],1)),j.hourly.temperature_2m[i0+i]]);
+  const days=j.daily.time.map((t,i)=>[i?new Date(t).toLocaleDateString('ru',{weekday:'short'}):'Сегодня',IC(kind(j.daily.weather_code[i],1)),j.daily.temperature_2m_max[i],j.daily.temperature_2m_min[i]]);
+  show({city,t:c.temperature_2m,desc:SC[k][1],fl:c.apparent_temperature,wd:c.wind_speed_10m,hm:c.relative_humidity_2m,hrs,days});setScene(k);live=1;$('note').textContent='';
+ }catch(e){live=0;demo(city,sc);$('note').textContent='Нет связи с сервером погоды — показаны примерные данные.'}
+}
+async function search(){
+ const v=$('q').value.trim();if(!v)return;
+ try{const r=await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&language=ru&name='+encodeURIComponent(v)),j=await r.json(),p=j.results[0];load(p.name,p.latitude,p.longitude)}
+ catch(e){const c=CITIES[v.toLowerCase()];c?load(v[0].toUpperCase()+v.slice(1),...c):($('note').textContent='Город не найден (в демо-режиме доступны: Ташкент, Самарканд, Бухара, Москва, Лондон, Токио)')}
+}
+$('go').onclick=search;$('q').onkeydown=e=>e.key==='Enter'&&search();
+$('loc').onclick=()=>{try{navigator.geolocation.getCurrentPosition(p=>load('Моё место',p.coords.latitude,p.coords.longitude),()=>$('note').textContent='Геолокация недоступна в этом окне',{timeout:8000})}catch(e){$('note').textContent='Геолокация недоступна'}};
+const mc=document.querySelector('.main');addEventListener('pointermove',e=>{mc.style.setProperty('--ry',(e.clientX/W-.5)*9+'deg');mc.style.setProperty('--rx',-(e.clientY/H-.5)*9+'deg')});addEventListener('pointerleave',()=>{mc.style.setProperty('--ry','0deg');mc.style.setProperty('--rx','0deg')});
+addEventListener('resize',rs);rs();demo('Ташкент','clear');loop();load('Ташкент',41.3,69.24);
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script></body></html>
